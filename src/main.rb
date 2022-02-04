@@ -1,3 +1,3 @@
-require_relative 'day3.rb'
+require_relative 'day4.rb'
 
-Day3.main
+Day4.main
