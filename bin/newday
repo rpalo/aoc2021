@@ -1,0 +1,57 @@
+#! /usr/bin/env ruby
+
+require 'erb'
+require 'fileutils'
+
+def main
+  usage if ARGV.empty?
+
+  day = ARGV[0]
+  puts "Creating Day #{day} source and data files..."
+  src_template = File.expand_path("../templates/day.rb.erb", __dir__)
+  src_out = File.expand_path("../src/day#{day}.rb", __dir__)
+  main_template = File.expand_path("../templates/main.rb.erb", __dir__)
+  main_out = File.expand_path("../src/main.rb", __dir__)
+  context = binding
+
+  safe_create(src_out, src_template, context)
+  create(main_out, main_template, context)
+  safe_create(File.expand_path("../data/day#{day}.txt", __dir__))
+  safe_create(File.expand_path("../data/day#{day}_test.txt", __dir__))
+  puts "Done."
+end
+
+def usage
+  puts <<~TEXT
+    USAGE: #{$PROGRAM_NAME} DAY
+      DAY = integer specifying which day the puzzle is.
+  TEXT
+  exit(1)
+end
+
+def safe_create(outfile, template=nil, context=nil)
+  if File.exist? outfile
+    puts "#{outfile} already exists.  Skipping."
+    return
+  end
+
+  puts "Creating #{outfile}."
+  if template.nil?
+    FileUtils.touch(outfile)
+  else
+    contents = ERB.new(File.read(template))
+    File.write(outfile, contents.result(context))
+  end
+end
+
+def create(outfile, template=nil, context=nil)
+  puts "Creating #{outfile}."
+  if template.nil?
+    FileUtils.touch(outfile)
+  else
+    contents = ERB.new(File.read(template))
+    File.write(outfile, contents.result(context))
+  end
+end
+
+main

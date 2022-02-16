@@ -1,0 +1,14 @@
+module Day<%= day %>
+  def self.main
+    filename = ARGV[0] == 'test' ? 'data/day<%= day %>_test.txt' : 'data/day<%= day %>.txt'
+    parse(filename)
+    
+    puts 
+  end
+
+  def self.parse(filename)
+    File.open(filename).map do |line|
+      
+    end
+  end
+end
