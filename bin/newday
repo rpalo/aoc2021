@@ -3,10 +3,21 @@
 require 'erb'
 require 'fileutils'
 
-def main
-  usage if ARGV.empty?
+DAY_FILE = File.expand_path("../.advent", __dir__)
 
-  day = ARGV[0]
+
+def main
+  if File.exist?(DAY_FILE) && (day = File.read(DAY_FILE).to_i) >= 1 && day <= 24
+    day += 1
+    File.write(DAY_FILE, "#{day}")
+    generate_files(day)
+  else
+    day = initialize_day_file
+    generate_files(day)
+  end
+end
+
+def generate_files(day)
   puts "Creating Day #{day} source and data files..."
   src_template = File.expand_path("../templates/day.rb.erb", __dir__)
   src_out = File.expand_path("../src/day#{day}.rb", __dir__)
@@ -23,10 +34,20 @@ end
 
 def usage
   puts <<~TEXT
-    USAGE: #{$PROGRAM_NAME} DAY
-      DAY = integer specifying which day the puzzle is.
+    USAGE: #{$PROGRAM_NAME}
   TEXT
   exit(1)
+end
+
+def initialize_day_file
+  loop do
+    puts "What day to create (integer 1 <= day <= 25)? > "
+    day = gets.to_i
+    if (1..25).include?(day)
+      File.write(DAY_FILE, "#{day}")
+      return day
+    end
+  end
 end
 
 def safe_create(outfile, template=nil, context=nil)
