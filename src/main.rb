@@ -1,3 +1,3 @@
-require_relative 'day15'
+require_relative 'day16'
 
-Day15.main
+Day16.main
